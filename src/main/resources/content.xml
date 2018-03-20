@@ -1,0 +1,28 @@
+<content>
+    <data>
+        <content-item>
+            <resourceURI>https://oss.sonatype.org/service/local/repositories/releases/content/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-javadoc.jar.asc.md5</resourceURI>
+            <relativePath>/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-javadoc.jar.asc.md5</relativePath>
+            <text>droid-core-6.4-javadoc.jar.asc.md5</text>
+            <leaf>true</leaf>
+            <lastModified>2017-08-01 14:46:35.0 UTC</lastModified>
+            <sizeOnDisk>32</sizeOnDisk>
+        </content-item>
+        <content-item>
+            <resourceURI>https://oss.sonatype.org/service/local/repositories/releases/content/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-sources.jar.sha1</resourceURI>
+            <relativePath>/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-sources.jar.sha1</relativePath>
+            <text>droid-core-6.4-sources.jar.sha1</text>
+            <leaf>true</leaf>
+            <lastModified>2017-08-01 14:46:31.0 UTC</lastModified>
+            <sizeOnDisk>40</sizeOnDisk>
+        </content-item>
+        <content-item>
+            <resourceURI>https://oss.sonatype.org/service/local/repositories/releases/content/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-javadoc.jar.sha1</resourceURI>
+            <relativePath>/uk/gov/nationalarchives/droid-core/6.4/droid-core-6.4-javadoc.jar.sha1</relativePath>
+            <text>droid-core-6.4-javadoc.jar.sha1</text>
+            <leaf>true</leaf>
+            <lastModified>2017-08-01 14:46:30.0 UTC</lastModified>
+            <sizeOnDisk>40</sizeOnDisk>
+        </content-item>
+    </data>
+</content>
