@@ -5,12 +5,12 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import play.api.libs.ws._
 import play.api.libs.ws.ahc._
+import play.api.libs.ws.XMLBodyReadables._
 
 import scala.concurrent._
 import scala.concurrent.duration._
-
-
 import scala.concurrent.{Await, Future}
+import scala.util.Try
 
 
 object Repocopy extends App {
@@ -29,7 +29,9 @@ object Repocopy extends App {
   // "AhcWSClientConfigFactory.forConfig(ConfigFactory.load, this.getClass.getClassLoader)"
   val wsClient = StandaloneAhcWSClient()
 
-  callMavenRepo(wsClient, "uk.gov.nationalarchives", "droid-core")
+  //callMavenRepo(wsClient, "uk.gov.nationalarchives", "droid-core")
+
+  callGroupProject(wsClient, "uk.gov.nationalarchives", "droid")
 
 
   Await.ready(call(wsClient)
@@ -50,33 +52,50 @@ object Repocopy extends App {
   }
 
 
-  def callMavenRepo(wsClient: StandaloneWSClient, groupID: String, artifactId: String): Unit = {
-    import play.api.libs.ws.XMLBodyReadables._
+
+
+  def callGroupProject(wsClient: StandaloneWSClient, groupID: String, artifactId: String): Unit = {
 
     val urlGroup = groupID.replaceAll("\\.", "/")
-
-
-//     https://oss.sonatype.org/              content/repositories/releases/uk/gov/nationalarchives/droid-core/
-    // https://oss.sonatype.org/service/local/repositories/releases/content/uk/gov/nationalarchives/droid-core/
-    //                                      http://central.maven.org/maven2/uk/gov/nationalarchives/droid-core/
-
-    // https://oss.sonatype.org/service/local/repositories/snapshots/content/uk/gov/nationalarchives/droid-core/maven-metadata.xml
-
 
     val responseBody: Future[scala.xml.Elem] = wsClient.url(s"https://oss.sonatype.org/service/local/repositories/releases/content/${urlGroup}/${artifactId}/maven-metadata.xml")
       .get().map {responseBody => responseBody.body[scala.xml.Elem]}
 
     val metadata = Await.result(responseBody, 10 seconds)
 
-    println("")
-    println(metadata)
-    println("\n")
-
-
+//    println("")
+//    println(metadata)
+//    println("\n")
 
     val version = (metadata \ "versioning" \ "release").text
 
-    println(s"version : ${version}")
+    val pomFuture: Future[scala.xml.Elem] = wsClient.url(s"https://oss.sonatype.org/service/local/repositories/releases/content/" +
+      s"${urlGroup}/${artifactId}/${version}/${artifactId}-${version}.pom")
+      .get().map {responseBody => responseBody.body[scala.xml.Elem]}
+
+
+    val pom = Await.result(pomFuture, 10 seconds)
+
+//    print(pom)
+
+    val modules = (pom \ "modules" \ "module").toList.map(_.text)
+
+    println(modules.mkString("\n"))
+
+    val files = modules.map(x => Try(callMavenRepo(wsClient, groupID, x, version))).filter(_.isSuccess).map(_.get).flatten
+
+    println("\n\nall files to copy : ")
+    println(files.mkString("\n"))
+
+  }
+
+
+
+  def callMavenRepo(wsClient: StandaloneWSClient, groupID: String, artifactId: String, version: String): List[String] = {
+
+
+    val urlGroup = groupID.replaceAll("\\.", "/")
+    
 
     val soubory: Future[scala.xml.Elem] = wsClient.url(s"https://oss.sonatype.org/service/local/repositories/releases/content/${urlGroup}/${artifactId}/${version}/")
       .get().map {responseBody => responseBody.body[scala.xml.Elem]}
@@ -89,6 +108,7 @@ object Repocopy extends App {
 
 //    Console.println(files)
 
+    ggg
 
   }
 
