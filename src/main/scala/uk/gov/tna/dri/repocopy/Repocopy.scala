@@ -80,7 +80,8 @@ object Repocopy extends App {
 
     val modules = (pom \ "modules" \ "module").toList.map(_.text)
 
-    println(modules.mkString("\n"))
+    println("modules : ")
+    println(modules.mkString("\n") + "\n")
 
     val files = modules.map(x => Try(callMavenRepo(wsClient, groupID, x, version))).filter(_.isSuccess).map(_.get).flatten
 
@@ -95,7 +96,7 @@ object Repocopy extends App {
 
 
     val urlGroup = groupID.replaceAll("\\.", "/")
-    
+
 
     val soubory: Future[scala.xml.Elem] = wsClient.url(s"https://oss.sonatype.org/service/local/repositories/releases/content/${urlGroup}/${artifactId}/${version}/")
       .get().map {responseBody => responseBody.body[scala.xml.Elem]}
